@@ -1,7 +1,7 @@
 # kids-learning-game-
 I# 🎮 Toddler Games
 
-[Game Link](https://edenberga.github.io/kids-learning-game-/)
+[Game Link](https://edenberga.github.io/kids-learning-game/)
 
 A collection of simple, colorful, toddler-friendly browser games designed for easy play on tablets and computers.
 
@@ -19,7 +19,7 @@ A fun name-learning game where children can enter their name and fill the letter
 * Designed for toddlers
 * Works on tablets and computers
 
-👉 [Play Name Maze](https://edenberga.github.io/kids-learning-game-/name-maze.html)
+👉 [Play Name Maze](https://edenberga.github.io/kids-learning-game/name-maze.html)
 
 ---
 
@@ -40,7 +40,7 @@ Help the fire truck find its way out of a randomly generated maze!
   * ➡️ Right
 * Celebration when the fire truck reaches the exit
 
-👉 [Play Fire Truck Maze](https://edenberga.github.io/kids-learning-game-/fire-truck-maze.html)
+👉 [Play Fire Truck Maze](https://edenberga.github.io/kids-learning-game/fire-truck-maze.html)
 
 ## 🏠 Home Page
 
