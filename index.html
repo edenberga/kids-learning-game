@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Toddler Games</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Arial,sans-serif;background:linear-gradient(135deg,#fff8d9,#dff6ff 50%,#f5e5ff);display:flex;justify-content:center;align-items:center;padding:24px;color:#263238}
+.page{width:100%;max-width:1000px;text-align:center}
+h1{margin:0;font-size:clamp(2.5rem,8vw,5rem);line-height:1}
+.subtitle{margin:16px 0 30px;font-size:clamp(1.2rem,3vw,1.7rem);font-weight:700}
+.games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+.game{text-decoration:none;color:#263238;background:#fff;border:6px solid #fff;border-radius:34px;padding:34px 28px 30px;min-height:390px;display:flex;flex-direction:column;justify-content:center;align-items:center;box-shadow:0 12px 30px rgba(0,0,0,.12);transition:transform .15s ease;cursor:pointer;touch-action:manipulation}
+.game:active{transform:scale(.97)}
+.name-game{background:linear-gradient(180deg,#fff,#fff4fc)}
+.fire-game{background:linear-gradient(180deg,#fff,#fff2ed)}
+.emoji{font-size:clamp(5rem,15vw,9rem);line-height:1;margin-bottom:18px}
+h2{margin:0 0 12px;font-size:clamp(2rem,5vw,3rem)}
+.description{margin:0 0 24px;font-size:clamp(1.15rem,3vw,1.45rem);line-height:1.4;font-weight:600;max-width:360px}
+.play{padding:16px 34px;border-radius:999px;background:#263238;color:#fff;font-size:1.35rem;font-weight:800}
+.hint{margin-top:28px;font-size:1rem;font-weight:700;opacity:.7}
+@media(max-width:700px){body{padding:16px;align-items:flex-start}.page{padding-top:18px}.games{grid-template-columns:1fr;gap:18px}.game{min-height:330px;padding:25px 20px}.emoji{font-size:6rem}}
+</style>
+</head>
+<body>
+<main class="page">
+<h1>🎮 Toddler Games</h1>
+<p class="subtitle">Pick a game and have fun! ⭐</p>
+<section class="games" aria-label="Games">
+<a class="game name-game" href="name-maze.html">
+<div class="emoji">🌈</div><h2>Name Maze</h2>
+<p class="description">Fill your name with colorful balls!</p>
+<span class="play">PLAY ▶</span>
+</a>
+<a class="game fire-game" href="fire-truck-maze.html">
+<div class="emoji">🚒</div><h2>Fire Truck Maze</h2>
+<p class="description">Use the arrow keys to help the fire truck escape!</p>
+<span class="play">PLAY ▶</span>
+</a>
+</section>
+<p class="hint">🌟 Choose a game above 🌟</p>
+</main>
+</body>
+</html>
