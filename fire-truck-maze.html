@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Fire Truck Maze</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;background:linear-gradient(#9ee7ff,#eaffcf);color:#17324d}
+body{touch-action:manipulation}
+.wrap{max-width:1000px;margin:auto;padding:12px}
+.card{background:#fff;border-radius:28px;padding:14px;box-shadow:0 8px 28px #17324d22}
+h1{font-size:clamp(30px,6vw,54px);text-align:center;color:#d92d20;margin:4px 0 6px}
+.instructions{text-align:center;font-size:clamp(18px,3vw,25px);font-weight:800;margin:4px 0 12px}
+canvas{display:block;width:100%;height:auto;background:#fff8e8;border:6px solid #334155;border-radius:22px;touch-action:none}
+.status{text-align:center;font-size:22px;font-weight:900;min-height:32px;margin:7px}
+.win{color:#16a34a}
+.keyboard-help{text-align:center;font-size:clamp(18px,3vw,25px);font-weight:800;background:#fff7d6;border:3px solid #f2c94c;border-radius:18px;padding:12px;margin:12px auto;max-width:760px}
+.keyboard-help span{font-size:clamp(16px,2.5vw,22px)}
+.actions{display:flex;justify-content:center;margin-top:10px}
+.actions button{border:0;border-radius:16px;padding:13px 24px;background:#2563eb;color:white;font-weight:800;font-size:20px;min-height:52px;cursor:pointer}
+.actions button:active{transform:translateY(2px)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1>🚒 Help the Fire Truck!</h1>
+    <div class="instructions">Drive the fire truck through the maze and find the exit!</div>
+    <canvas id="maze" width="900" height="600" aria-label="Interactive fire truck maze"></canvas>
+    <div class="status" id="status" aria-live="polite">Use the arrow keys to start driving! 🚒</div>
+    <div class="keyboard-help">
+      ⌨️ Use the <strong>arrow keys on your keyboard</strong>
+      <br><span>⬆️ Up &nbsp;&nbsp; ⬇️ Down &nbsp;&nbsp; ⬅️ Left &nbsp;&nbsp; ➡️ Right</span>
+    </div>
+    <div class="actions">
+      <button id="reset" type="button">🔄 New Maze</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById("maze");
+  const ctx = canvas.getContext("2d");
+  const status = document.getElementById("status");
+
+  // Odd dimensions make a clean, guaranteed-solvable maze.
+  const ROWS = 15;
+  const COLS = 21;
+  const cellW = canvas.width / COLS;
+  const cellH = canvas.height / ROWS;
+
+  const start = { r: 1, c: 1 };
+  const exit = { r: ROWS - 2, c: COLS - 2 };
+
+  let grid = [];
+  let player = { ...start };
+  let won = false;
+
+  function makeMaze() {
+    // Start with all walls.
+    grid = Array.from({length: ROWS}, () => Array(COLS).fill(1));
+
+    // Randomized depth-first maze carving. This always creates a connected
+    // path from start to exit.
+    const stack = [{r:1,c:1}];
+    grid[1][1] = 0;
+
+    while (stack.length) {
+      const current = stack[stack.length - 1];
+      const options = [];
+
+      const dirs = [
+        {dr:-2, dc:0},
+        {dr:2, dc:0},
+        {dr:0, dc:-2},
+        {dr:0, dc:2}
+      ];
+
+      for (const d of dirs) {
+        const nr = current.r + d.dr;
+        const nc = current.c + d.dc;
+        if (nr > 0 && nr < ROWS-1 && nc > 0 && nc < COLS-1 && grid[nr][nc] === 1) {
+          options.push({dr:d.dr, dc:d.dc, nr, nc});
+        }
+      }
+
+      if (!options.length) {
+        stack.pop();
+        continue;
+      }
+
+      const choice = options[Math.floor(Math.random() * options.length)];
+      const middleR = current.r + choice.dr / 2;
+      const middleC = current.c + choice.dc / 2;
+
+      grid[middleR][middleC] = 0;
+      grid[choice.nr][choice.nc] = 0;
+      stack.push({r:choice.nr,c:choice.nc});
+    }
+
+    // Ensure the exit is open.
+    grid[exit.r][exit.c] = 0;
+    grid[exit.r][exit.c - 1] = 0;
+  }
+
+  function drawFireTruck(x, y, w, h) {
+    // shadow
+    ctx.fillStyle = "#0002";
+    ctx.beginPath();
+    ctx.ellipse(x+w/2, y+h*.91, w*.42, h*.10, 0, 0, Math.PI*2);
+    ctx.fill();
+
+    // body
+    ctx.fillStyle = "#e53935";
+    ctx.strokeStyle = "#991b1b";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.roundRect(x+w*.08, y+h*.35, w*.84, h*.42, h*.08);
+    ctx.fill(); ctx.stroke();
+
+    // cab
+    ctx.beginPath();
+    ctx.roundRect(x+w*.52, y+h*.18, w*.39, h*.52, h*.08);
+    ctx.fill(); ctx.stroke();
+
+    // windows
+    ctx.fillStyle = "#bde9ff";
+    ctx.fillRect(x+w*.59, y+h*.25, w*.13, h*.19);
+    ctx.fillRect(x+w*.76, y+h*.25, w*.11, h*.19);
+
+    // ladder
+    ctx.strokeStyle = "#e5e7eb";
+    ctx.lineWidth = Math.max(2.5, w*.035);
+    ctx.beginPath();
+    ctx.moveTo(x+w*.18,y+h*.29); ctx.lineTo(x+w*.72,y+h*.08);
+    ctx.moveTo(x+w*.22,y+h*.24); ctx.lineTo(x+w*.77,y+h*.04);
+    ctx.stroke();
+
+    for(let i=0;i<5;i++){
+      ctx.beginPath();
+      ctx.moveTo(x+w*(.25+i*.1),y+h*(.25-i*.038));
+      ctx.lineTo(x+w*(.275+i*.1),y+h*(.31-i*.038));
+      ctx.stroke();
+    }
+
+    // wheels
+    for(const q of [.25,.72]){
+      ctx.fillStyle="#172033";
+      ctx.beginPath(); ctx.arc(x+w*q,y+h*.79,w*.105,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle="#94a3b8";
+      ctx.beginPath(); ctx.arc(x+w*q,y+h*.79,w*.045,0,Math.PI*2); ctx.fill();
+    }
+
+    // siren
+    ctx.fillStyle="#facc15";
+    ctx.beginPath(); ctx.arc(x+w*.68,y+h*.13,w*.055,0,Math.PI*2); ctx.fill();
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle="#fff8e8";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    for(let r=0;r<ROWS;r++){
+      for(let c=0;c<COLS;c++){
+        const x=c*cellW, y=r*cellH;
+
+        if(grid[r][c] === 1){
+          ctx.fillStyle="#334155";
+          ctx.beginPath();
+          ctx.roundRect(x+1,y+1,cellW-2,cellH-2,5);
+          ctx.fill();
+          ctx.fillStyle="#475569";
+          ctx.fillRect(x+4,y+4,cellW-8,3);
+        } else {
+          ctx.fillStyle="#fffaf0";
+          ctx.fillRect(x,y,cellW,cellH);
+        }
+      }
+    }
+
+    // Exit
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.font=`bold ${Math.min(cellW,cellH)*.52}px Arial`;
+    ctx.fillText("🏁", exit.c*cellW+cellW/2, exit.r*cellH+cellH/2);
+
+    // Player
+    drawFireTruck(
+      player.c*cellW+cellW*.05,
+      player.r*cellH+cellH*.05,
+      cellW*.90,
+      cellH*.90
+    );
+
+    if(won){
+      ctx.fillStyle="#16a34acc";
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle="#fff";
+      ctx.font=`900 ${Math.min(canvas.width*.075,58)}px Arial`;
+      ctx.fillText("🎉 YOU DID IT! 🎉",canvas.width/2,canvas.height*.43);
+      ctx.font=`900 ${Math.min(canvas.width*.045,34)}px Arial`;
+      ctx.fillText("The fire truck is out!",canvas.width/2,canvas.height*.56);
+    }
+  }
+
+  function move(dr,dc) {
+    if(won) return;
+
+    const nr = player.r + dr;
+    const nc = player.c + dc;
+
+    if(nr < 0 || nr >= ROWS || nc < 0 || nc >= COLS || grid[nr][nc] === 1){
+      status.textContent = "🚧 Bump! Try another way!";
+      return;
+    }
+
+    player = {r:nr,c:nc};
+
+    if(player.r === exit.r && player.c === exit.c){
+      won = true;
+      status.textContent = "🎉 Great job! The fire truck escaped!";
+      status.classList.add("win");
+    } else {
+      status.textContent = "🚒 Keep going!";
+    }
+
+    draw();
+  }
+
+  // Keyboard controls only.
+  window.addEventListener("keydown", (e) => {
+    const moves = {
+      ArrowUp: [-1,0],
+      ArrowDown: [1,0],
+      ArrowLeft: [0,-1],
+      ArrowRight: [0,1]
+    };
+
+    if(moves[e.key]){
+      e.preventDefault();
+      move(...moves[e.key]);
+    }
+  });
+
+  document.getElementById("reset").addEventListener("click", () => {
+    makeMaze();
+    player = {...start};
+    won = false;
+    status.textContent = "🚒 New maze! Find the way out!";
+    status.classList.remove("win");
+    draw();
+  });
+
+  makeMaze();
+  draw();
+})();
+</script>
+</body>
+</html>
