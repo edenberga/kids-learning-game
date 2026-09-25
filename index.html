@@ -131,4 +131,72 @@ can.addEventListener("pointerdown",e=>{
 colors.forEach((col,i)=>{const b=document.createElement("button");b.className="ball";b.style.background=col;b.onclick=()=>{selected=i;document.querySelectorAll(".ball").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");status.textContent="Now tap a circle inside a letter."};tray.appendChild(b)});
 form.onsubmit=e=>{e.preventDefault();name=clean(inp.value);if(!name){status.textContent="Please type a name.";return}setup.style.display="none";game.style.display="block";document.querySelector("#title").textContent=`Let's fill ${name}!`;makeSlots()};
 document.querySelector("#new").onclick=()=>{game.style.display="none";setup.style.display="block";inp.value=name;inp.focus();selected=null};
+</script></body></html>function makeSlots(){
+ getLetters();drawText();
+ const data=ctx.getImageData(0,0,940,400).data;
+ slots=[];
+ // Work on each letter separately, so every letter gets its own circles.
+ letterBoxes.forEach((box,li)=>{
+   const raw=[];
+   const pad=4,r=13;
+   for(let y=50;y<365;y+=6){
+     for(let x=Math.max(10,Math.floor(box.left-pad));x<Math.min(930,Math.ceil(box.right+pad));x+=6){
+       // Require the full ball area to be over letter pixels.
+       let ok=true;
+       for(let yy=-r;yy<=r&&ok;yy+=2)for(let xx=-r;xx<=r;xx+=2){
+         if(xx*xx+yy*yy>r*r)continue;
+         const X=x+xx,Y=y+yy;
+         if(X<0||X>=940||Y<0||Y>=400){ok=false;break}
+         const k=(Y*940+X)*4;
+         if(data[k]>235){ok=false;break}
+       }
+       if(ok)raw.push({x,y,letter:li,color:null});
+     }
+   }
+   // Select well-spaced points, favoring the center of the available stroke.
+   const cx=(box.left+box.right)/2;
+   raw.sort((a,b)=>Math.hypot(a.x-cx,a.y-205)-Math.hypot(b.x-cx,b.y-205));
+   const chosen=[];
+   for(const q of raw){
+     if(chosen.every(s=>Math.hypot(s.x-q.x,s.y-q.y)>=30))chosen.push(q);
+     if(chosen.length>=12)break;
+   }
+   // Guarantee at least one circle per letter if a very narrow glyph has no 13px-wide spot.
+   if(!chosen.length){
+     // Find the darkest/most central pixel cluster and place a smaller visual target there.
+     const testR=7;
+     let best=null;
+     for(let y=70;y<345;y+=4)for(let x=Math.floor(box.left);x<Math.ceil(box.right);x+=4){
+       let score=0;
+       for(let yy=-testR;yy<=testR;yy+=2)for(let xx=-testR;xx<=testR;xx+=2){
+         if(xx*xx+yy*yy<=testR*testR){
+           const X=x+xx,Y=y+yy,k=(Y*940+X)*4;if(data[k]<235)score++;
+         }
+       }
+       if(!best||score>best.score)best={x,y,score};
+     }
+     if(best)chosen.push({x:best.x,y:best.y,letter:li,color:null,small:true});
+   }
+   slots.push(...chosen);
+ });
+ draw();
+}
+function draw(){
+ drawText();
+ slots.forEach(s=>{
+   ctx.beginPath();ctx.arc(s.x,s.y,s.small?11:13,0,Math.PI*2);
+   ctx.fillStyle=s.color||"#f4f6f9";ctx.fill();
+   ctx.lineWidth=s.color?3:2;ctx.strokeStyle=s.color?"#fff":"#9caabd";ctx.stroke();
+ });
+ const n=slots.filter(s=>s.color).length;prog.textContent=`${n} / ${slots.length} circles filled`;done.style.display=n===slots.length&&n?"block":"none";
+}
+function pos(e){const r=can.getBoundingClientRect();return{x:(e.clientX-r.left)*940/r.width,y:(e.clientY-r.top)*400/r.height}}
+can.addEventListener("pointerdown",e=>{
+ if(selected===null)return;const p=pos(e);let best=-1,d=35;
+ slots.forEach((s,i)=>{if(!s.color){const q=Math.hypot(s.x-p.x,s.y-p.y);if(q<d){d=q;best=i}}});
+ if(best>=0){slots[best].color=colors[selected];selected=null;document.querySelectorAll(".ball").forEach(b=>b.classList.remove("selected"));draw();status.textContent="Great! Keep going!"}
+});
+colors.forEach((col,i)=>{const b=document.createElement("button");b.className="ball";b.style.background=col;b.onclick=()=>{selected=i;document.querySelectorAll(".ball").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");status.textContent="Now tap a circle inside a letter."};tray.appendChild(b)});
+form.onsubmit=e=>{e.preventDefault();name=clean(inp.value);if(!name){status.textContent="Please type a name.";return}setup.style.display="none";game.style.display="block";document.querySelector("#title").textContent=`Let's fill ${name}!`;makeSlots()};
+document.querySelector("#new").onclick=()=>{game.style.display="none";setup.style.display="block";inp.value=name;inp.focus();selected=null};
 </script></body></html>
