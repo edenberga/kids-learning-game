@@ -1,45 +1,134 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Toddler Games</title>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Name Ball Maze</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:Arial,sans-serif;background:linear-gradient(135deg,#fff8d9,#dff6ff 50%,#f5e5ff);display:flex;justify-content:center;align-items:center;padding:24px;color:#263238}
-.page{width:100%;max-width:1000px;text-align:center}
-h1{margin:0;font-size:clamp(2.5rem,8vw,5rem);line-height:1}
-.subtitle{margin:16px 0 30px;font-size:clamp(1.2rem,3vw,1.7rem);font-weight:700}
-.games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
-.game{text-decoration:none;color:#263238;background:#fff;border:6px solid #fff;border-radius:34px;padding:34px 28px 30px;min-height:390px;display:flex;flex-direction:column;justify-content:center;align-items:center;box-shadow:0 12px 30px rgba(0,0,0,.12);transition:transform .15s ease;cursor:pointer;touch-action:manipulation}
-.game:active{transform:scale(.97)}
-.name-game{background:linear-gradient(180deg,#fff,#fff4fc)}
-.fire-game{background:linear-gradient(180deg,#fff,#fff2ed)}
-.emoji{font-size:clamp(5rem,15vw,9rem);line-height:1;margin-bottom:18px}
-h2{margin:0 0 12px;font-size:clamp(2rem,5vw,3rem)}
-.description{margin:0 0 24px;font-size:clamp(1.15rem,3vw,1.45rem);line-height:1.4;font-weight:600;max-width:360px}
-.play{padding:16px 34px;border-radius:999px;background:#263238;color:#fff;font-size:1.35rem;font-weight:800}
-.hint{margin-top:28px;font-size:1rem;font-weight:700;opacity:.7}
-@media(max-width:700px){body{padding:16px;align-items:flex-start}.page{padding-top:18px}.games{grid-template-columns:1fr;gap:18px}.game{min-height:330px;padding:25px 20px}.emoji{font-size:6rem}}
+body{margin:0;background:#f7fbff;font-family:Arial,sans-serif;color:#20304a}.wrap{max-width:1000px;margin:auto;padding:24px;text-align:center}
+h1{font-size:clamp(32px,6vw,50px);margin:8px 0}.panel{background:#fff;border:2px solid #dce4ee;border-radius:24px;padding:20px}
+.sub,.hint{color:#65748a;font-size:18px}.row{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+input{font-size:22px;padding:13px;border:2px solid #bbc6d5;border-radius:14px;width:min(340px,100%)}button{border:0;border-radius:14px;padding:13px 20px;font-weight:800;font-size:17px;cursor:pointer}.start{background:#596bdc;color:#fff}.reset{background:#e9edff;color:#26355b}
+#game{display:none}canvas{width:100%;max-width:940px;height:auto;border:2px solid #e1e7ef;border-radius:22px;touch-action:none}.tray{display:flex;justify-content:center;gap:15px;flex-wrap:wrap;margin:16px}.ball{width:58px;height:58px;border-radius:50%;padding:0;border:4px solid white;box-shadow:0 3px 8px #aaa}.ball.selected{outline:4px solid #596bdc;outline-offset:3px}
+#done{display:none;color:#168447;font-size:23px;font-weight:900;margin:12px}#status{min-height:24px;color:#65748a}
 </style>
-</head>
-<body>
-<main class="page">
-<h1>🎮 Toddler Games</h1>
-<p class="subtitle">Pick a game and have fun! ⭐</p>
-<section class="games" aria-label="Games">
-<a class="game name-game" href="name-maze.html">
-<div class="name-icon" aria-hidden="true">N A M E</div><h2>Name Maze</h2>
-<p class="description">Fill your name with colorful balls!</p>
-<span class="play">PLAY ▶</span>
-</a>
-<a class="game fire-game" href="fire-truck-maze.html">
-<div class="emoji">🚒</div><h2>Fire Truck Maze</h2>
-<p class="description">Use the arrow keys to help the fire truck escape!</p>
-<span class="play">PLAY ▶</span>
-</a>
-</section>
-<p class="hint">🌟 Choose a game above 🌟</p>
-</main>
-</body>
-</html>
+<style id="toddler-friendly-enhancements">
+html,body{overscroll-behavior:none}
+body{touch-action:manipulation}
+button,.color-ball,.ball,.color{min-height:58px;min-width:58px}
+canvas{touch-action:none;user-select:none;-webkit-user-select:none}
+input,button{font-size:clamp(20px,4vw,28px)}
+@media (max-width:700px){
+  body{font-size:18px}
+  canvas{width:100%!important;height:auto!important}
+}
+</style>
+<script>
+document.addEventListener('gesturestart', e => e.preventDefault(), {passive:false});
+document.addEventListener('dblclick', e => e.preventDefault(), {passive:false});
+</script>
+
+</head><body><div class="wrap"><h1>🌟 Name Ball Maze 🌟</h1><div class="panel">
+<div id="setup"><p class="sub">First, tell me your name!</p><form id="form" class="row"><input id="name" maxlength="12" placeholder="Type a name"><button class="start">Make My Maze!</button></form></div>
+<div id="game"><h2 id="title"></h2><p class="hint">Pick a ball, then tap a circle inside each letter.</p><div id="progress"></div><canvas id="c" width="940" height="400"></canvas><div class="tray" id="tray"></div><button class="reset" id="new">↻ New Name</button><div id="done">🎉 You filled the whole name! 🎉</div><div id="status"></div></div>
+</div></div>
+<script>
+const colors=["#ef4444","#f97316","#facc15","#22c55e","#3b82f6","#8b5cf6"];
+const form=document.querySelector("#form"),inp=document.querySelector("#name"),setup=document.querySelector("#setup"),game=document.querySelector("#game"),can=document.querySelector("#c"),ctx=can.getContext("2d"),tray=document.querySelector("#tray"),prog=document.querySelector("#progress"),done=document.querySelector("#done"),status=document.querySelector("#status");
+let name="",slots=[],selected=null,font=180,letterBoxes=[];
+function clean(s){return s.replace(/[^a-z]/gi,"").slice(0,12).toUpperCase()}
+function setupFont(){
+ font=Math.min(210,Math.floor(820/Math.max(name.length*.68,1)));
+ ctx.font=`900 ${font}px Arial`;
+ let w=ctx.measureText(name).width;if(w>840)font=Math.floor(font*840/w);
+ ctx.font=`900 ${font}px Arial`;
+}
+function getLetters(){
+ setupFont();
+ const widths=[...name].map(ch=>ctx.measureText(ch).width);
+ const total=widths.reduce((a,b)=>a+b,0);
+ let x=470-total/2;
+ letterBoxes=widths.map((w,i)=>{const box={char:name[i],left:x,right:x+w};x+=w;return box});
+}
+function drawText(){
+ ctx.clearRect(0,0,940,400);ctx.fillStyle="#fff";ctx.fillRect(0,0,940,400);
+ ctx.font=`900 ${font}px Arial`;ctx.textAlign="left";ctx.textBaseline="middle";ctx.fillStyle="#d8e0ea";
+ let x=470-letterBoxes.reduce((a,b)=>a+b.right-b.left,0)/2;
+ for(const box of letterBoxes){ctx.fillText(box.char,x,205);x+=box.right-box.left}
+}
+function pixelInside(data,x,y,r){
+ for(let yy=-r;yy<=r;yy+=2)for(let xx=-r;xx<=r;xx+=2){
+  if(xx*xx+yy*yy>r*r)continue;
+  const X=Math.round(x+xx),Y=Math.round(y+yy);
+  if(X<0||X>=940||Y<0||Y>=400)return false;
+  const k=(Y*940+X)*4;
+  if(data[k]<235)return true;
+ }
+ return false;
+}
+function makeSlots(){
+ getLetters();drawText();
+ const data=ctx.getImageData(0,0,940,400).data;
+ slots=[];
+ // Work on each letter separately, so every letter gets its own circles.
+ letterBoxes.forEach((box,li)=>{
+   const raw=[];
+   const pad=4,r=13;
+   for(let y=50;y<365;y+=6){
+     for(let x=Math.max(10,Math.floor(box.left-pad));x<Math.min(930,Math.ceil(box.right+pad));x+=6){
+       // Require the full ball area to be over letter pixels.
+       let ok=true;
+       for(let yy=-r;yy<=r&&ok;yy+=2)for(let xx=-r;xx<=r;xx+=2){
+         if(xx*xx+yy*yy>r*r)continue;
+         const X=x+xx,Y=y+yy;
+         if(X<0||X>=940||Y<0||Y>=400){ok=false;break}
+         const k=(Y*940+X)*4;
+         if(data[k]>235){ok=false;break}
+       }
+       if(ok)raw.push({x,y,letter:li,color:null});
+     }
+   }
+   // Select well-spaced points, favoring the center of the available stroke.
+   const cx=(box.left+box.right)/2;
+   raw.sort((a,b)=>Math.hypot(a.x-cx,a.y-205)-Math.hypot(b.x-cx,b.y-205));
+   const chosen=[];
+   for(const q of raw){
+     if(chosen.every(s=>Math.hypot(s.x-q.x,s.y-q.y)>=30))chosen.push(q);
+     if(chosen.length>=12)break;
+   }
+   // Guarantee at least one circle per letter if a very narrow glyph has no 13px-wide spot.
+   if(!chosen.length){
+     // Find the darkest/most central pixel cluster and place a smaller visual target there.
+     const testR=7;
+     let best=null;
+     for(let y=70;y<345;y+=4)for(let x=Math.floor(box.left);x<Math.ceil(box.right);x+=4){
+       let score=0;
+       for(let yy=-testR;yy<=testR;yy+=2)for(let xx=-testR;xx<=testR;xx+=2){
+         if(xx*xx+yy*yy<=testR*testR){
+           const X=x+xx,Y=y+yy,k=(Y*940+X)*4;if(data[k]<235)score++;
+         }
+       }
+       if(!best||score>best.score)best={x,y,score};
+     }
+     if(best)chosen.push({x:best.x,y:best.y,letter:li,color:null,small:true});
+   }
+   slots.push(...chosen);
+ });
+ draw();
+}
+function draw(){
+ drawText();
+ slots.forEach(s=>{
+   ctx.beginPath();ctx.arc(s.x,s.y,s.small?11:13,0,Math.PI*2);
+   ctx.fillStyle=s.color||"#f4f6f9";ctx.fill();
+   ctx.lineWidth=s.color?3:2;ctx.strokeStyle=s.color?"#fff":"#9caabd";ctx.stroke();
+ });
+ const n=slots.filter(s=>s.color).length;prog.textContent=`${n} / ${slots.length} circles filled`;done.style.display=n===slots.length&&n?"block":"none";
+}
+function pos(e){const r=can.getBoundingClientRect();return{x:(e.clientX-r.left)*940/r.width,y:(e.clientY-r.top)*400/r.height}}
+can.addEventListener("pointerdown",e=>{
+ if(selected===null)return;const p=pos(e);let best=-1,d=35;
+ slots.forEach((s,i)=>{if(!s.color){const q=Math.hypot(s.x-p.x,s.y-p.y);if(q<d){d=q;best=i}}});
+ if(best>=0){slots[best].color=colors[selected];selected=null;document.querySelectorAll(".ball").forEach(b=>b.classList.remove("selected"));draw();status.textContent="Great! Keep going!"}
+});
+colors.forEach((col,i)=>{const b=document.createElement("button");b.className="ball";b.style.background=col;b.onclick=()=>{selected=i;document.querySelectorAll(".ball").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");status.textContent="Now tap a circle inside a letter."};tray.appendChild(b)});
+form.onsubmit=e=>{e.preventDefault();name=clean(inp.value);if(!name){status.textContent="Please type a name.";return}setup.style.display="none";game.style.display="block";document.querySelector("#title").textContent=`Let's fill ${name}!`;makeSlots()};
+document.querySelector("#new").onclick=()=>{game.style.display="none";setup.style.display="block";inp.value=name;inp.focus();selected=null};
+</script></body></html>
