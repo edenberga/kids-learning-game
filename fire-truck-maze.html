@@ -4,687 +4,222 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>Fire Truck Challenge Maze</title>
-
 <style>
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
-
-html, body {
-  margin: 0;
-  min-height: 100%;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(#9ee7ff, #eaffcf);
-  color: #17324d;
-}
-
-body {
-  touch-action: manipulation;
-}
-
-.wrap {
-  max-width: 1250px;
-  margin: auto;
-  padding: 12px;
-}
-
-.card {
-  background: #fff;
-  border-radius: 28px;
-  padding: 14px;
-  box-shadow: 0 8px 28px #17324d22;
-}
-
-h1 {
-  font-size: clamp(28px, 5vw, 48px);
-  text-align: center;
-  color: #d92d20;
-  margin: 4px 0 6px;
-}
-
-.instructions {
-  text-align: center;
-  font-size: clamp(17px, 2.5vw, 22px);
-  font-weight: 800;
-  margin: 4px 0 12px;
-}
-
-.game-layout {
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-}
-
-.maze-area {
-  flex: 1;
-  min-width: 0;
-}
-
-canvas {
-  display: block;
-  width: 100%;
-  height: auto;
-  background: #fff8e8;
-  border: 5px solid #334155;
-  border-radius: 18px;
-  touch-action: none;
-}
-
-.sidebar {
-  width: 165px;
-  flex-shrink: 0;
-  text-align: center;
-}
-
-.counter-card,
-.challenge-card {
-  background: #fff7d6;
-  border: 4px solid #f2c94c;
-  border-radius: 20px;
-  padding: 14px 8px;
-  margin-bottom: 12px;
-}
-
-.counter-icon {
-  font-size: 36px;
-}
-
-.counter-label {
-  font-size: 20px;
-  font-weight: 900;
-  margin: 6px 0;
-}
-
-.counter-number {
-  font-size: 44px;
-  font-weight: 900;
-  color: #d92d20;
-  background: white;
-  border-radius: 12px;
-  padding: 5px;
-}
-
-.challenge-card {
-  background: #e0f2fe;
-  border-color: #38bdf8;
-  font-size: 16px;
-  font-weight: 800;
-  line-height: 1.5;
-}
-
-.status {
-  text-align: center;
-  font-size: 21px;
-  font-weight: 900;
-  min-height: 30px;
-  margin: 10px 0;
-}
-
-.win {
-  color: #16a34a;
-}
-
-.keyboard-help {
-  text-align: center;
-  font-size: clamp(17px, 2.5vw, 22px);
-  font-weight: 800;
-  background: #fff7d6;
-  border: 3px solid #f2c94c;
-  border-radius: 18px;
-  padding: 12px;
-  margin: 12px auto;
-  max-width: 760px;
-}
-
-.keyboard-help span {
-  font-size: clamp(15px, 2vw, 20px);
-}
-
-.actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 10px;
-}
-
-.actions button {
-  border: 0;
-  border-radius: 15px;
-  padding: 12px 20px;
-  background: #2563eb;
-  color: white;
-  font-weight: 800;
-  font-size: 18px;
-  min-height: 50px;
-  cursor: pointer;
-}
-
-.actions button:active {
-  transform: translateY(2px);
-}
-
-@media (max-width: 650px) {
-  .game-layout {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .sidebar {
-    width: 100%;
-    display: flex;
-    gap: 8px;
-  }
-
-  .counter-card,
-  .challenge-card {
-    flex: 1;
-    margin-bottom: 0;
-    padding: 8px;
-  }
-
-  .counter-card {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 9px;
-  }
-
-  .counter-icon {
-    font-size: 28px;
-  }
-
-  .counter-label {
-    font-size: 16px;
-    margin: 0;
-  }
-
-  .counter-number {
-    font-size: 28px;
-    padding: 3px 10px;
-  }
-
-  .challenge-card {
-    font-size: 13px;
-  }
-
-  .counter-help {
-    display: none;
-  }
-}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;font-family:Arial,sans-serif;background:linear-gradient(#9ee7ff,#eaffcf);color:#17324d}
+body{touch-action:manipulation}
+.wrap{max-width:1250px;margin:auto;padding:12px}
+.card{background:#fff;border-radius:28px;padding:14px;box-shadow:0 8px 28px #17324d22}
+h1{font-size:clamp(28px,5vw,48px);text-align:center;color:#d92d20;margin:4px 0 6px}
+.instructions{text-align:center;font-size:clamp(17px,2.5vw,22px);font-weight:800;margin:4px 0 12px}
+.game-layout{display:flex;align-items:flex-start;gap:14px}
+.maze-area{flex:1;min-width:0}
+canvas{display:block;width:100%;height:auto;background:#fff8e8;border:5px solid #334155;border-radius:18px;touch-action:none}
+.sidebar{width:165px;flex-shrink:0;text-align:center}
+.counter-card,.challenge-card{background:#fff7d6;border:4px solid #f2c94c;border-radius:20px;padding:14px 8px;margin-bottom:12px}
+.counter-icon{font-size:36px}.counter-label{font-size:20px;font-weight:900;margin:6px 0}
+.counter-number{font-size:44px;font-weight:900;color:#d92d20;background:white;border-radius:12px;padding:5px}
+.challenge-card{background:#e0f2fe;border-color:#38bdf8;font-size:16px;font-weight:800;line-height:1.5}
+.status{text-align:center;font-size:21px;font-weight:900;min-height:30px;margin:10px 0}
+.win{color:#16a34a}
+.keyboard-help{text-align:center;font-size:clamp(17px,2.5vw,22px);font-weight:800;background:#fff7d6;border:3px solid #f2c94c;border-radius:18px;padding:12px;margin:12px auto;max-width:760px}
+.keyboard-help span{font-size:clamp(15px,2vw,20px)}
+.direction-pad{display:grid;grid-template-columns:repeat(3,64px);grid-template-rows:repeat(2,54px);gap:7px;justify-content:center;margin:12px auto;touch-action:manipulation}
+.direction-pad button{border:0;border-radius:14px;background:#16a34a;color:white;font-size:28px;font-weight:900;box-shadow:0 4px 0 #166534;cursor:pointer;touch-action:manipulation;user-select:none}
+.direction-pad button:active{transform:translateY(3px);box-shadow:0 1px 0 #166534}
+.direction-pad .up{grid-column:2;grid-row:1}.direction-pad .left{grid-column:1;grid-row:2}.direction-pad .down{grid-column:2;grid-row:2}.direction-pad .right{grid-column:3;grid-row:2}
+.actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+.actions button{border:0;border-radius:15px;padding:12px 20px;background:#2563eb;color:white;font-weight:800;font-size:18px;min-height:50px;cursor:pointer}
+.actions button:active{transform:translateY(2px)}
+@media(max-width:650px){.game-layout{flex-direction:column;align-items:stretch}.sidebar{width:100%;display:flex;gap:8px}.counter-card,.challenge-card{flex:1;margin-bottom:0;padding:8px}.counter-card{display:flex;align-items:center;justify-content:center;gap:9px}.counter-icon{font-size:28px}.counter-label{font-size:16px;margin:0}.counter-number{font-size:28px;padding:3px 10px}.challenge-card{font-size:13px}.counter-help{display:none}}
 </style>
 </head>
-
 <body>
-<div class="wrap">
-<div class="card">
-
+<div class="wrap"><div class="card">
 <h1>🚒 Fire Truck Maze Challenge!</h1>
-
-<div class="instructions">
-  Can you find your way through the tricky maze and reach the fire station? 🏁
-</div>
-
+<div class="instructions">Can you find your way through the tricky maze and reach the fire station? 🏁</div>
 <div class="game-layout">
-
-  <div class="maze-area">
-    <canvas
-      id="maze"
-      width="1050"
-      height="750"
-      aria-label="Interactive challenging fire truck maze">
-    </canvas>
-  </div>
-
+  <div class="maze-area"><canvas id="maze" width="1050" height="750" aria-label="Interactive challenging fire truck maze"></canvas></div>
   <aside class="sidebar">
-    <div class="counter-card">
-      <div class="counter-icon">💥</div>
-
-      <div>
-        <div class="counter-label">Bumps</div>
-        <div class="counter-number" id="bumps">0</div>
-      </div>
-
-      <div class="counter-help">Avoid the walls!</div>
-    </div>
-
-    <div class="challenge-card">
-      ⭐ CHALLENGE<br>
-      Find the exit!<br>
-      Watch out for dead ends.<br>
-      Plan your next turn!
-    </div>
+    <div class="counter-card"><div class="counter-icon">💥</div><div><div class="counter-label">Bumps</div><div class="counter-number" id="bumps">0</div></div><div class="counter-help">Avoid the walls!</div></div>
+    <div class="challenge-card">⭐ CHALLENGE<br>Find the exit!<br>Watch out for dead ends.<br>Plan your next turn!</div>
   </aside>
-
 </div>
-
-<div class="status" id="status" aria-live="polite">
-  Use the arrow keys to start your rescue mission! 🚒
+<div class="status" id="status" aria-live="polite">Use the arrow keys to start your rescue mission! 🚒</div>
+<div class="keyboard-help">⌨️ Use the <strong>keyboard arrow keys</strong> or tap the buttons below.</div>
+<div class="direction-pad" aria-label="Fire truck movement controls">
+  <button class="up" data-dr="-1" data-dc="0" aria-label="Move up">⬆️</button>
+  <button class="left" data-dr="0" data-dc="-1" aria-label="Move left">⬅️</button>
+  <button class="down" data-dr="1" data-dc="0" aria-label="Move down">⬇️</button>
+  <button class="right" data-dr="0" data-dc="1" aria-label="Move right">➡️</button>
 </div>
-
-<div class="keyboard-help">
-  ⌨️ Use the <strong>arrow keys</strong><br>
-  <span>
-    ⬆️ Up &nbsp;&nbsp;
-    ⬇️ Down &nbsp;&nbsp;
-    ⬅️ Left &nbsp;&nbsp;
-    ➡️ Right
-  </span>
-</div>
-
-<div class="actions">
-  <button id="reset" type="button">🔄 New Maze</button>
-</div>
-
-</div>
-</div>
-
+<div class="actions"><button id="reset" type="button">🔄 New Maze</button></div>
+</div></div>
 <script>
 (() => {
-  const canvas = document.getElementById("maze");
-  const ctx = canvas.getContext("2d");
+  const canvas=document.getElementById("maze"),ctx=canvas.getContext("2d");
+  const status=document.getElementById("status"),bumpsDisplay=document.getElementById("bumps");
+  // Larger odd-sized grid means more corridors, turns, and dead ends.
+  const ROWS=25,COLS=35,cellW=canvas.width/COLS,cellH=canvas.height/ROWS;
+  const start={r:1,c:1},exit={r:ROWS-2,c:COLS-2};
+  let grid=[],player={...start},won=false,rescueStarted=false,rescueStartTime=0,bumps=0,audioContext=null,animationFrame=null;
 
-  const status = document.getElementById("status");
-  const bumpsDisplay = document.getElementById("bumps");
-
-  // A larger maze with more corridors and turns.
-  const ROWS = 25;
-  const COLS = 35;
-
-  const cellW = canvas.width / COLS;
-  const cellH = canvas.height / ROWS;
-
-  const start = { r: 1, c: 1 };
-  const exit = { r: ROWS - 2, c: COLS - 2 };
-
-  let grid = [];
-  let player = { ...start };
-  let won = false;
-  let bumps = 0;
-  let audioContext = null;
-
-  // Set up audio for bump and victory sounds.
-  function getAudioContext() {
-    if (!audioContext) {
-      const AC = window.AudioContext || window.webkitAudioContext;
-
-      if (!AC) return null;
-
-      audioContext = new AC();
-    }
-
-    if (audioContext.state === "suspended") {
-      audioContext.resume();
-    }
-
+  function getAudioContext(){
+    if(!audioContext){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;audioContext=new AC();}
+    if(audioContext.state==="suspended")audioContext.resume();
     return audioContext;
   }
-
-  // Short sound when the fire truck hits a wall.
-  function playBumpSound() {
-    const a = getAudioContext();
-
-    if (!a) return;
-
-    const o = a.createOscillator();
-    const g = a.createGain();
-    const t = a.currentTime;
-
-    o.type = "square";
-
-    o.frequency.setValueAtTime(180, t);
-    o.frequency.exponentialRampToValueAtTime(65, t + 0.13);
-
-    g.gain.setValueAtTime(0.16, t);
-    g.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
-
-    o.connect(g);
-    g.connect(a.destination);
-
-    o.start(t);
-    o.stop(t + 0.16);
+  function playBumpSound(){
+    const a=getAudioContext();if(!a)return;
+    const o=a.createOscillator(),g=a.createGain(),t=a.currentTime;
+    o.type="square";o.frequency.setValueAtTime(180,t);o.frequency.exponentialRampToValueAtTime(65,t+.13);
+    g.gain.setValueAtTime(.16,t);g.gain.exponentialRampToValueAtTime(.001,t+.16);
+    o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+.16);
   }
-
-  // Cheerful melody when the player wins.
-  function playWinSound() {
-    const a = getAudioContext();
-
-    if (!a) return;
-
-    const notes = [
-      { f: 523.25, s: 0,    d: 0.18 },
-      { f: 659.25, s: 0.18, d: 0.18 },
-      { f: 783.99, s: 0.36, d: 0.18 },
-      { f: 1046.5, s: 0.54, d: 0.45 }
-    ];
-
-    notes.forEach(n => {
-      const o = a.createOscillator();
-      const g = a.createGain();
-      const t = a.currentTime + n.s;
-
-      o.type = "sine";
-      o.frequency.setValueAtTime(n.f, t);
-
-      g.gain.setValueAtTime(0.001, t);
-      g.gain.linearRampToValueAtTime(0.2, t + 0.025);
-      g.gain.setValueAtTime(0.2, t + n.d * 0.65);
-      g.gain.exponentialRampToValueAtTime(0.001, t + n.d);
-
-      o.connect(g);
-      g.connect(a.destination);
-
-      o.start(t);
-      o.stop(t + n.d);
+  function playWinSound(){
+    const a=getAudioContext();if(!a)return;
+    [{f:523.25,s:0,d:.18},{f:659.25,s:.18,d:.18},{f:783.99,s:.36,d:.18},{f:1046.5,s:.54,d:.45}].forEach(n=>{
+      const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+n.s;
+      o.type="sine";o.frequency.setValueAtTime(n.f,t);
+      g.gain.setValueAtTime(.001,t);g.gain.linearRampToValueAtTime(.2,t+.025);
+      g.gain.setValueAtTime(.2,t+n.d*.65);g.gain.exponentialRampToValueAtTime(.001,t+n.d);
+      o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+n.d);
     });
   }
-
-  // Generate a random maze using depth-first search.
-  function makeMaze() {
-    grid = Array.from(
-      { length: ROWS },
-      () => Array(COLS).fill(1)
-    );
-
-    const stack = [{ r: 1, c: 1 }];
-
-    grid[1][1] = 0;
-
-    const dirs = [
-      { dr: -2, dc: 0 },
-      { dr: 2, dc: 0 },
-      { dr: 0, dc: -2 },
-      { dr: 0, dc: 2 }
-    ];
-
-    while (stack.length) {
-      const cur = stack[stack.length - 1];
-      const opts = [];
-
-      for (const d of dirs) {
-        const nr = cur.r + d.dr;
-        const nc = cur.c + d.dc;
-
-        if (
-          nr > 0 &&
-          nr < ROWS - 1 &&
-          nc > 0 &&
-          nc < COLS - 1 &&
-          grid[nr][nc] === 1
-        ) {
-          opts.push({ ...d, nr, nc });
-        }
-      }
-
-      if (!opts.length) {
-        stack.pop();
-        continue;
-      }
-
-      const q = opts[Math.floor(Math.random() * opts.length)];
-
-      grid[cur.r + q.dr / 2][cur.c + q.dc / 2] = 0;
-      grid[q.nr][q.nc] = 0;
-
-      stack.push({ r: q.nr, c: q.nc });
+  function makeMaze(){
+    grid=Array.from({length:ROWS},()=>Array(COLS).fill(1));
+    const stack=[{r:1,c:1}];grid[1][1]=0;
+    const dirs=[{dr:-2,dc:0},{dr:2,dc:0},{dr:0,dc:-2},{dr:0,dc:2}];
+    while(stack.length){
+      const cur=stack[stack.length-1],opts=[];
+      for(const d of dirs){const nr=cur.r+d.dr,nc=cur.c+d.dc;
+        if(nr>0&&nr<ROWS-1&&nc>0&&nc<COLS-1&&grid[nr][nc]===1)opts.push({...d,nr,nc});}
+      if(!opts.length){stack.pop();continue;}
+      const q=opts[Math.floor(Math.random()*opts.length)];
+      grid[cur.r+q.dr/2][cur.c+q.dc/2]=0;grid[q.nr][q.nc]=0;stack.push({r:q.nr,c:q.nc});
     }
-
     // Open the exit and connect it to the maze.
-    grid[exit.r][exit.c] = 0;
-    grid[exit.r][exit.c - 1] = 0;
-
-    // Add extra connections to create loops and harder choices.
-    for (let i = 0; i < Math.floor(ROWS * COLS * 0.025); i++) {
-      const r = 1 + Math.floor(Math.random() * (ROWS - 2));
-      const c = 1 + Math.floor(Math.random() * (COLS - 2));
-
-      if (grid[r][c] === 1) {
-        const vertical =
-          grid[r - 1]?.[c] === 0 &&
-          grid[r + 1]?.[c] === 0;
-
-        const horizontal =
-          grid[r]?.[c - 1] === 0 &&
-          grid[r]?.[c + 1] === 0;
-
-        if (vertical || horizontal) {
-          grid[r][c] = 0;
-        }
+    grid[exit.r][exit.c]=0;grid[exit.r][exit.c-1]=0;
+    // Add a few extra connections to create loops and make route-finding trickier.
+    for(let i=0;i<Math.floor(ROWS*COLS*.025);i++){
+      const r=1+Math.floor(Math.random()*(ROWS-2));
+      const c=1+Math.floor(Math.random()*(COLS-2));
+      if(grid[r][c]===1){
+        const vertical=(grid[r-1]?.[c]===0&&grid[r+1]?.[c]===0);
+        const horizontal=(grid[r]?.[c-1]===0&&grid[r]?.[c+1]===0);
+        if(vertical||horizontal)grid[r][c]=0;
       }
     }
   }
-
-  // Draw the fire truck.
-  function drawFireTruck(x, y, w, h) {
-    ctx.fillStyle = "#0002";
-
-    ctx.beginPath();
-    ctx.ellipse(
-      x + w / 2,
-      y + h * 0.91,
-      w * 0.42,
-      h * 0.1,
-      0,
-      0,
-      Math.PI * 2
-    );
-    ctx.fill();
-
-    ctx.fillStyle = "#e53935";
-    ctx.strokeStyle = "#991b1b";
-    ctx.lineWidth = 2;
-
-    ctx.beginPath();
-    ctx.roundRect(
-      x + w * 0.08,
-      y + h * 0.35,
-      w * 0.84,
-      h * 0.42,
-      h * 0.08
-    );
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.roundRect(
-      x + w * 0.52,
-      y + h * 0.18,
-      w * 0.39,
-      h * 0.52,
-      h * 0.08
-    );
-    ctx.fill();
-    ctx.stroke();
-
-    // Windows.
-    ctx.fillStyle = "#bde9ff";
-    ctx.fillRect(
-      x + w * 0.59,
-      y + h * 0.25,
-      w * 0.13,
-      h * 0.19
-    );
-    ctx.fillRect(
-      x + w * 0.76,
-      y + h * 0.25,
-      w * 0.11,
-      h * 0.19
-    );
-
-    // Ladder.
-    ctx.strokeStyle = "#e5e7eb";
-    ctx.lineWidth = Math.max(1.5, w * 0.035);
-
-    ctx.beginPath();
-    ctx.moveTo(x + w * 0.18, y + h * 0.29);
-    ctx.lineTo(x + w * 0.72, y + h * 0.08);
-    ctx.moveTo(x + w * 0.22, y + h * 0.24);
-    ctx.lineTo(x + w * 0.77, y + h * 0.04);
-    ctx.stroke();
-
-    for (let i = 0; i < 5; i++) {
-      ctx.beginPath();
-      ctx.moveTo(
-        x + w * (0.25 + i * 0.1),
-        y + h * (0.25 - i * 0.038)
-      );
-      ctx.lineTo(
-        x + w * (0.275 + i * 0.1),
-        y + h * (0.31 - i * 0.038)
-      );
-      ctx.stroke();
-    }
-
-    // Wheels.
-    for (const q of [0.25, 0.72]) {
-      ctx.fillStyle = "#172033";
-      ctx.beginPath();
-      ctx.arc(x + w * q, y + h * 0.79, w * 0.105, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = "#94a3b8";
-      ctx.beginPath();
-      ctx.arc(x + w * q, y + h * 0.79, w * 0.045, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    // Emergency light.
-    ctx.fillStyle = "#facc15";
-    ctx.beginPath();
-    ctx.arc(x + w * 0.68, y + h * 0.13, w * 0.055, 0, Math.PI * 2);
-    ctx.fill();
+  function drawFireTruck(x,y,w,h){
+    ctx.fillStyle="#0002";ctx.beginPath();ctx.ellipse(x+w/2,y+h*.91,w*.42,h*.1,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#e53935";ctx.strokeStyle="#991b1b";ctx.lineWidth=2;
+    ctx.beginPath();ctx.roundRect(x+w*.08,y+h*.35,w*.84,h*.42,h*.08);ctx.fill();ctx.stroke();
+    ctx.beginPath();ctx.roundRect(x+w*.52,y+h*.18,w*.39,h*.52,h*.08);ctx.fill();ctx.stroke();
+    ctx.fillStyle="#bde9ff";ctx.fillRect(x+w*.59,y+h*.25,w*.13,h*.19);ctx.fillRect(x+w*.76,y+h*.25,w*.11,h*.19);
+    ctx.strokeStyle="#e5e7eb";ctx.lineWidth=Math.max(1.5,w*.035);ctx.beginPath();
+    ctx.moveTo(x+w*.18,y+h*.29);ctx.lineTo(x+w*.72,y+h*.08);ctx.moveTo(x+w*.22,y+h*.24);ctx.lineTo(x+w*.77,y+h*.04);ctx.stroke();
+    for(let i=0;i<5;i++){ctx.beginPath();ctx.moveTo(x+w*(.25+i*.1),y+h*(.25-i*.038));ctx.lineTo(x+w*(.275+i*.1),y+h*(.31-i*.038));ctx.stroke();}
+    for(const q of [.25,.72]){ctx.fillStyle="#172033";ctx.beginPath();ctx.arc(x+w*q,y+h*.79,w*.105,0,Math.PI*2);ctx.fill();ctx.fillStyle="#94a3b8";ctx.beginPath();ctx.arc(x+w*q,y+h*.79,w*.045,0,Math.PI*2);ctx.fill();}
+    ctx.fillStyle="#facc15";ctx.beginPath();ctx.arc(x+w*.68,y+h*.13,w*.055,0,Math.PI*2);ctx.fill();
   }
-
-  // Draw the maze, exit, and truck.
-  function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    ctx.fillStyle = "#fff8e8";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    for (let r = 0; r < ROWS; r++) {
-      for (let c = 0; c < COLS; c++) {
-        const x = c * cellW;
-        const y = r * cellH;
-
-        if (grid[r][c] === 1) {
-          ctx.fillStyle = "#334155";
-          ctx.fillRect(x + 0.5, y + 0.5, cellW - 1, cellH - 1);
-
-          ctx.fillStyle = "#475569";
-          ctx.fillRect(x + 2, y + 2, Math.max(1, cellW - 4), 2);
-        } else {
-          ctx.fillStyle = "#fffaf0";
-          ctx.fillRect(x, y, cellW, cellH);
-        }
+  function drawRescuePerson(cx,cy,size,time,extinguished){
+    const jump=extinguished?0:Math.max(0,Math.sin(time/130))*size*.12;
+    const px=cx, py=cy-jump;
+    if(!extinguished){
+      for(let i=0;i<5;i++){
+        const fx=cx+(i-2)*size*.19, fy=cy+size*.22+Math.sin(time/100+i)*size*.035;
+        ctx.fillStyle=["#ff3b1f","#ff8c00","#ffd43b"][i%3];ctx.beginPath();
+        ctx.moveTo(fx-size*.09,fy+size*.12);
+        ctx.quadraticCurveTo(fx-size*.13,fy-size*.04,fx,fy-size*(.15+.04*Math.sin(time/80+i)));
+        ctx.quadraticCurveTo(fx+size*.13,fy-size*.02,fx+size*.09,fy+size*.12);ctx.closePath();ctx.fill();
       }
     }
-
-    // Finish line.
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.font = `bold ${Math.min(cellW, cellH) * 0.65}px Arial`;
-
-    ctx.fillText(
-      "🏁",
-      exit.c * cellW + cellW / 2,
-      exit.r * cellH + cellH / 2
-    );
-
-    // Fire truck.
-    drawFireTruck(
-      player.c * cellW + cellW * 0.04,
-      player.r * cellH + cellH * 0.04,
-      cellW * 0.92,
-      cellH * 0.92
-    );
-
-    // Victory overlay.
-    if (won) {
-      ctx.fillStyle = "#16a34acc";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = "#fff";
-      ctx.font = `900 ${Math.min(canvas.width * 0.07, 58)}px Arial`;
-      ctx.fillText("🎉 YOU DID IT! 🎉", canvas.width / 2, canvas.height * 0.43);
-
-      ctx.font = `900 ${Math.min(canvas.width * 0.035, 34)}px Arial`;
-      ctx.fillText(
-        "Rescue mission complete!",
-        canvas.width / 2,
-        canvas.height * 0.56
-      );
-    }
+    ctx.save();ctx.lineCap="round";ctx.lineJoin="round";
+    ctx.strokeStyle="#1d4ed8";ctx.lineWidth=size*.07;ctx.beginPath();
+    ctx.moveTo(px-size*.035,py+size*.22);ctx.lineTo(px-size*.11,py+size*.36);
+    ctx.moveTo(px+size*.035,py+size*.22);ctx.lineTo(px+size*.11,py+size*.36);ctx.stroke();
+    ctx.fillStyle=extinguished?"#22c55e":"#f97316";ctx.beginPath();ctx.roundRect(px-size*.09,py-size*.03,size*.18,size*.27,size*.055);ctx.fill();
+    ctx.fillStyle="#f4c7a1";ctx.beginPath();ctx.arc(px,py-size*.13,size*.105,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#5b341e";ctx.beginPath();ctx.arc(px,py-size*.17,size*.103,Math.PI,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#422006";ctx.beginPath();ctx.arc(px-size*.035,py-size*.15,size*.012,0,Math.PI*2);ctx.arc(px+size*.035,py-size*.15,size*.012,0,Math.PI*2);ctx.fill();
+    const wave=Math.sin(time/115)*.06;ctx.strokeStyle="#f4c7a1";ctx.lineWidth=size*.055;ctx.beginPath();
+    ctx.moveTo(px-size*.07,py+size*.02);ctx.lineTo(px-size*.18,py-size*.17+wave);ctx.lineTo(px-size*.22,py-size*.24+wave);
+    ctx.moveTo(px+size*.07,py+size*.02);ctx.lineTo(px+size*.18,py-size*.17-wave);ctx.lineTo(px+size*.22,py-size*.24-wave);ctx.stroke();ctx.restore();
   }
-
-  // Move the truck, count bumps, and check for victory.
-  function move(dr, dc) {
-    if (won) return;
-
-    const nr = player.r + dr;
-    const nc = player.c + dc;
-
-    if (
-      nr < 0 ||
-      nr >= ROWS ||
-      nc < 0 ||
-      nc >= COLS ||
-      grid[nr][nc] === 1
-    ) {
-      bumps++;
-      bumpsDisplay.textContent = bumps;
-      status.textContent = "💥 BUMP! Find another route!";
-      playBumpSound();
-      return;
+  function drawWater(x1,y1,x2,y2,time){
+    ctx.save();ctx.strokeStyle="#38bdf8";ctx.lineWidth=Math.max(3,cellW*.11);ctx.lineCap="round";ctx.beginPath();
+    ctx.moveTo(x1,y1);ctx.quadraticCurveTo((x1+x2)/2,y1-cellH*.22,x2,y2);ctx.stroke();
+    for(let i=0;i<13;i++){const p=((time/75+i*.17)%1),x=x1+(x2-x1)*p,y=y1+(y2-y1)*p-Math.sin(p*Math.PI)*cellH*.22;
+      ctx.fillStyle=i%2?"#e0f2fe":"#0284c7";ctx.beginPath();ctx.arc(x,y+Math.sin(time/65+i)*2,Math.max(2,cellW*.045),0,Math.PI*2);ctx.fill();}
+    ctx.restore();
+  }
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#fff8e8";ctx.fillRect(0,0,canvas.width,canvas.height);
+    for(let r=0;r<ROWS;r++)for(let c=0;c<COLS;c++){
+      const x=c*cellW,y=r*cellH;
+      if(grid[r][c]===1){ctx.fillStyle="#334155";ctx.fillRect(x+.5,y+.5,cellW-1,cellH-1);ctx.fillStyle="#475569";ctx.fillRect(x+2,y+2,Math.max(1,cellW-4),2);}
+      else{ctx.fillStyle="#fffaf0";ctx.fillRect(x,y,cellW,cellH);}
     }
-
-    player = { r: nr, c: nc };
-
-    if (player.r === exit.r && player.c === exit.c) {
-      won = true;
-      status.textContent = "🎉 Amazing! You completed the challenge!";
-      status.classList.add("win");
-      playWinSound();
+    const now=performance.now(), sceneX=exit.c*cellW+cellW/2, sceneY=exit.r*cellH+cellH/2;
+    const size=Math.min(cellW,cellH)*(rescueStarted ? 2.25 : 1.45);
+    drawRescuePerson(sceneX,sceneY-cellH*.05,size,now,won);
+    const truckR=rescueStarted?exit.r:player.r, truckC=rescueStarted?exit.c-1:player.c;
+    let truckX,truckY,truckW,truckH;
+    if(rescueStarted){
+      // Make the truck dramatically larger during the rescue scene.
+      truckW=cellW*1.85;
+      truckH=cellH*1.75;
+      truckX=(exit.c-2.15)*cellW;
+      truckY=(exit.r-.72)*cellH;
     } else {
-      status.textContent = "🚒 Keep going, rescue hero!";
+      truckX=truckC*cellW+cellW*.04;
+      truckY=truckR*cellH+cellH*.04;
+      truckW=cellW*.92;
+      truckH=cellH*.92;
     }
-
+    drawFireTruck(truckX,truckY,truckW,truckH);
+    if(rescueStarted&&!won){
+      // Water streams from the enlarged truck toward the person.
+      drawWater(truckX+truckW*.88,truckY+truckH*.43,sceneX-size*.24,sceneY+cellH*.02,now);
+    }
+    if(won){ctx.fillStyle="#16a34a22";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.fillStyle="#166534";ctx.textAlign="center";ctx.textBaseline="middle";
+      ctx.font=`900 ${Math.min(canvas.width*.052,52)}px Arial`;ctx.fillText("🎉 RESCUE COMPLETE! 🎉",canvas.width/2,canvas.height*.12);
+      ctx.font=`900 ${Math.min(canvas.width*.028,28)}px Arial`;ctx.fillText("The fire is out — everyone is safe!",canvas.width/2,canvas.height*.18);
+    }
+  }
+  function animateRescue(){
+    if(!rescueStarted)return;
+    if(performance.now()-rescueStartTime>=1900&&!won){won=true;status.textContent="🎉 The fire is out! The person is safe! Great rescue!";status.classList.add("win");playWinSound();}
+    draw();if(rescueStarted&&!won)animationFrame=requestAnimationFrame(animateRescue);
+  }
+  function move(dr,dc){
+    if(won||rescueStarted)return;
+    const nr=player.r+dr,nc=player.c+dc;
+    if(nr<0||nr>=ROWS||nc<0||nc>=COLS||grid[nr][nc]===1){
+      bumps++;bumpsDisplay.textContent=bumps;status.textContent="💥 BUMP! Find another route!";playBumpSound();return;
+    }
+    player={r:nr,c:nc};
+    if(player.r===exit.r&&player.c===exit.c){rescueStarted=true;rescueStartTime=performance.now();player={r:exit.r,c:exit.c-1};status.textContent="🆘 The person needs help! Spraying water...";animationFrame=requestAnimationFrame(animateRescue);}
+    else status.textContent="🚒 Keep going, rescue hero!";
     draw();
   }
-
-  // Arrow-key controls.
-  window.addEventListener("keydown", e => {
-    const moves = {
-      ArrowUp: [-1, 0],
-      ArrowDown: [1, 0],
-      ArrowLeft: [0, -1],
-      ArrowRight: [0, 1]
-    };
-
-    if (moves[e.key]) {
-      e.preventDefault();
-      move(...moves[e.key]);
-    }
+  window.addEventListener("keydown",e=>{
+    const moves={ArrowUp:[-1,0],ArrowDown:[1,0],ArrowLeft:[0,-1],ArrowRight:[0,1]};
+    if(moves[e.key]){e.preventDefault();move(...moves[e.key]);}
   });
 
-  // Start a new random maze.
-  document.getElementById("reset").addEventListener("click", () => {
-    makeMaze();
-
-    player = { ...start };
-    won = false;
-    bumps = 0;
-
-    bumpsDisplay.textContent = "0";
-    status.textContent = "🚒 New challenge! Find the fire station!";
-    status.classList.remove("win");
-
-    draw();
+  // On-screen controls work with mouse, touchscreen, and repeated taps.
+  document.querySelectorAll(".direction-pad button").forEach(button=>{
+    button.addEventListener("click",()=>{
+      move(Number(button.dataset.dr),Number(button.dataset.dc));
+    });
   });
-
-  makeMaze();
-  draw();
+  document.getElementById("reset").addEventListener("click",()=>{
+    makeMaze();player={...start};won=false;rescueStarted=false;rescueStartTime=0;if(animationFrame)cancelAnimationFrame(animationFrame);bumps=0;bumpsDisplay.textContent="0";
+    status.textContent="🚒 New challenge! Find the fire station!";status.classList.remove("win");draw();
+  });
+  makeMaze();draw();
 })();
 </script>
 </body>
